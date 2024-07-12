@@ -1,12 +1,27 @@
 import requests
-import pprint
+import time
 
-api_url = "http://api.telegram.org/bot7347541686:AAER4jOnrHGDZYCKwhplv62zb5IPU-25YFI/sendMessage?chat_id=6991696753&text=Привет. дружище!!!"
 
-response = requests.get(api_url)
+API_URL = 'https://api.telegram.org/bot'
+BOT_TOKEN = "7347541686:AAER4jOnrHGDZYCKwhplv62zb5IPU-25YFI"
 
-if response.status_code == 200:
-    pprint.pprint(response.text)
+offset = -2
+updates: dict
 
-else:
-    print(requests.status_code)
+
+def do_something() -> None:
+    print('Был апдейт')
+
+
+while True: 
+    start_time = time.time()
+    updates = requests.get(f'{API_URL}{BOT_TOKEN}/getUpdates?offset={offset + 1}').json()
+
+    if updates['result']:
+        for result in updates['result']:
+            offset = result['update_id']
+            do_something()
+
+    time.sleep(3)
+    end_time = time.time()
+    print(f'Время между запросами к Telegram Bot API: {end_time - start_time}')
