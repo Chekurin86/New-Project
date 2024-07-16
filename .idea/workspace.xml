@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c190ff2c-c64a-45cf-9a0c-26ef023bf4ec" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ugadaika_bot.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ugadaika_many_players.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/beta.py" beforeDir="false" afterPath="$PROJECT_DIR$/beta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test3.py" beforeDir="false" afterPath="$PROJECT_DIR$/test3.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,12 +55,13 @@
     &quot;Python.test.executor&quot;: &quot;Run&quot;,
     &quot;Python.test2.executor&quot;: &quot;Run&quot;,
     &quot;Python.test3.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ugadaika_many_players.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;work&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.ugadaika_many_players">
+  <component name="RunManager" selected="Python.beta">
     <configuration name="beta" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="New" />
       <option name="ENV_FILES" value="" />
@@ -174,11 +174,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.ugadaika_many_players" />
         <item itemvalue="Python.beta" />
-        <item itemvalue="Python.test2" />
         <item itemvalue="Python.echo_bot" />
         <item itemvalue="Python.test3" />
+        <item itemvalue="Python.ugadaika_many_players" />
+        <item itemvalue="Python.test2" />
       </list>
     </recent_temporary>
   </component>

@@ -1,6 +1,7 @@
 import requests
 import time
 
+from aiogram.types import message
 
 API_URL = 'https://api.telegram.org/bot'
 BOT_TOKEN = "7347541686:AAER4jOnrHGDZYCKwhplv62zb5IPU-25YFI"
@@ -11,6 +12,7 @@ updates: dict
 
 def do_something() -> None:
     print('Был апдейт')
+    print(message.from_user.id)
 
 
 while True: 
