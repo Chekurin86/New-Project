@@ -1,31 +1,30 @@
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart
-from aiogram.types import (KeyboardButton, Message, ReplyKeyboardMarkup)
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, KeyboardButtonPollType
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
-
+from aiogram.types import (KeyboardButton, Message, ReplyKeyboardMarkup,
+                           ReplyKeyboardRemove)
 BOT_TOKEN = "7347541686:AAER4jOnrHGDZYCKwhplv62zb5IPU-25YFI"
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-# Создаем список списков с кнопками
-keyboard: list[list[KeyboardButton]] = [
-    [KeyboardButton(text=str(i)) for i in range(1, 4)],
-    [KeyboardButton(text=str(i)) for i in range(4, 7)]
-]
-
-keyboard.append(KeyboardButton(text='7'))
+button_1 = KeyboardButton(text="Собак")
+button_2 = KeyboardButton(text="Огурцов")
 
 # Создаем объект клавиатуры, добавляя в него кнопки
-my_keyboard = ReplyKeyboardMarkup(
-    keyboard=keyboard,
-    resize_keyboard=True
+keyboard = ReplyKeyboardMarkup(
+    keyboard=[[button_1, button_2]],
+    resize_keyboard=True,
+    one_time_keyboard=True
 )
+
+# Этот хендлер будет срабатывать на команду "/start"
+# и отправлять в чат клавиатуру
 @dp.message(CommandStart())
 async def process_start_command(message: Message):
-    await message.answer(text='Вот такая получается клавиатура',
-                         reply_markup=my_keyboard)
+    await message.answer(
+        text="Чего кошки боятся больше?",
+        reply_markup=keyboard
+    )
 
 # Этот хендлер будет срабатывать на ответ "Собак" и удалять клавиатуру
 @dp.message(F.text == "Собак")

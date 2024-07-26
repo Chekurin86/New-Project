@@ -1,28 +1,53 @@
-import requests
-import time
+from aiogram import Bot, Dispatcher, F
+from aiogram.filters import CommandStart
+from aiogram.types import (KeyboardButton, Message, ReplyKeyboardMarkup,
+                           ReplyKeyboardRemove)
 
-from aiogram.types import message
-
-API_URL = 'https://api.telegram.org/bot'
+# Вместо BOT TOKEN HERE нужно вставить токен вашего бота,
+# полученный у @BotFather
 BOT_TOKEN = "7347541686:AAER4jOnrHGDZYCKwhplv62zb5IPU-25YFI"
-offset = -2
-timeout = 20.63
-updates: dict
+
+# Создаем объекты бота и диспетчера
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
+
+# Создаем объекты кнопок
+button_1 = KeyboardButton(text='Собак 🦮')
+button_2 = KeyboardButton(text='Огурцов 🥒')
+
+# Создаем объект клавиатуры, добавляя в него кнопки
+keyboard = ReplyKeyboardMarkup(keyboard=[[button_1, button_2]])
 
 
-def do_something() -> None:
-    print('Был апдейт')
-    print(message.from_user.id)
+# Этот хэндлер будет срабатывать на команду "/start"
+# и отправлять в чат клавиатуру
+@dp.message(CommandStart())
+async def process_start_command(message: Message):
+    await message.answer(
+        text='Чего кошки боятся больше?',
+        reply_markup=keyboard
+    )
 
 
-while True: 
-    start_time = time.time()
-    updates = requests.get(f'{API_URL}{BOT_TOKEN}/getUpdates?offset={offset + 1}&timeout={timeout}').json()
+# Этот хэндлер будет срабатывать на ответ "Собак 🦮" и удалять клавиатуру
+@dp.message(F.text == 'Собак 🦮')
+async def process_dog_answer(message: Message):
+    await message.answer(
+        text='Да, несомненно, кошки боятся собак. '
+             'Но вы видели как они боятся огурцов?',
+        reply_markup=ReplyKeyboardRemove()
+    )
 
-    if updates['result']:
-        for result in updates['result']:
-            offset = result['update_id']
-            do_something()
 
-    end_time = time.time()
-    print(f'Время между запросами к Telegram Bot API: {end_time - start_time}')
+# Этот хэндлер будет срабатывать на ответ "Огурцов 🥒" и удалять клавиатуру
+@dp.message(F.text == 'Огурцов 🥒')
+async def process_cucumber_answer(message: Message):
+    await message.answer(
+        text='Да, иногда кажется, что огурцов '
+             'кошки боятся больше',
+        reply_markup=ReplyKeyboardRemove()
+    )
+
+
+if __name__ == '__main__':
+    dp.run_polling(bot)
