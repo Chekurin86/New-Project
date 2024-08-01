@@ -1,0 +1,46 @@
+from aiogram import  F, Router
+from aiogram.types import  Message
+from aiogram.filters import Command, CommandStart
+from keyboards.keyboards import game_kb, yes_no_kb
+from lexicon.lexicon import LEXICON
+from services.services import get_bot_choice, get_winner
+
+router = Router()
+
+# Этот хэндлер срабатывает на команду /start
+@router.message(CommandStart())
+async def process_start_command(message: Message):
+    await message.answer(text=LEXICON["/start"], reply_markup=yes_no_kb)
+
+# Этот хэндлер срабатывает на команду /help
+@router.message(Command(commands="help"))
+async def process_help_command(message: Message):
+    await message.answer(text=LEXICON["/help"], reply_markup=yes_no_kb)
+
+# Этот хэндлер срабатывает на согласие пользователя играть в игру
+@router.message(F.text == LEXICON["yes_button"])
+async def process_yes_answer(message: Message):
+    await message.answer(text=LEXICON["yes"], reply_markup=game_kb)
+
+# Этот хэндлер срабатывает на отказ пользователя играть в игру
+@router.message(F.text == LEXICON["no_button"])
+async def process_no_button(message: Message):
+    await message.answer(text=LEXICON["no"])
+
+# Этот хэндлер срабатывает на любую из игровых кнопок
+@router.message(F.text.in_([LEXICON["rock"],
+                            LEXICON["paper"],
+                            LEXICON["scissors"]]))
+async def process_game_button(message: Message):
+    bot_choice = get_bot_choice()
+    await message.answer(text=f"{LEXICON['bot_choice']} "
+                              f"- {LEXICON[bot_choice]}")
+    winner = get_winner(message.text, bot_choice)
+    await message.answer(text=LEXICON[winner], reply_markup=yes_no_kb)
+
+
+
+
+
+
+

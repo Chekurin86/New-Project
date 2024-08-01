@@ -1,47 +1,30 @@
-from aiogram import Bot, Dispatcher, F
-from aiogram.filters import CommandStart
-from aiogram.types import (KeyboardButton, Message, ReplyKeyboardMarkup)
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, KeyboardButtonPollType
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from aiogram import Bot, Dispatcher
+from aiogram.types import BotCommand
 
-BOT_TOKEN = "7347541686:AAER4jOnrHGDZYCKwhplv62zb5IPU-25YFI"
+BOT_TOKEN = ""
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-# Создаем список списков с кнопками
-keyboard: list[list[KeyboardButton]] = [
-    [KeyboardButton(text=str(i)) for i in range(1, 4)],
-    [KeyboardButton(text=str(i)) for i in range(4, 7)]
-]
+async def set_main_menu(bot: Bot):
+    # Создаем список с командами и их описанием для кнопки menu
+    main_menu_commands = [
+        BotCommand(command="/help",
+                   description="Справка по работе бота"),
+        BotCommand(command="/support",
+                   description="Поддержка"),
+        BotCommand(command="/contacts",
+                   description="Другие способы связи"),
+        BotCommand(command="/payments",
+                   description="Платежи")
+    ]
 
-keyboard.append(KeyboardButton(text='7'))
+    await bot.set_my_commands(main_menu_commands)
 
-# Создаем объект клавиатуры, добавляя в него кнопки
-my_keyboard = ReplyKeyboardMarkup(
-    keyboard=keyboard,
-    resize_keyboard=True
-)
-@dp.message(CommandStart())
-async def process_start_command(message: Message):
-    await message.answer(text='Вот такая получается клавиатура',
-                         reply_markup=my_keyboard)
+dp.startup.register(set_main_menu)
 
-# Этот хендлер будет срабатывать на ответ "Собак" и удалять клавиатуру
-@dp.message(F.text == "Собак")
-async def process_dog_answer(message: Message):
-    await message.answer(
-        text="Да, несомненно, кошки боятся собак. "
-             "Но вы видели как они боятся огурцов?",
-            )
+dp.run_polling(bot)
 
-# Этот хендлер будет срабатывать на ответ "Огурцов" и удалять клавиатуру
-@dp.message(F.text == "Огурцов")
-async def process_cucumber_answer(message: Message):
-    await message.answer(
-        text="Да, иногда кажется, что огуцов "
-             "кошки боятся больше",
-    )
 
-if __name__ == "__main__":
-    dp.run_polling(bot)
+
+

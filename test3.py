@@ -1,53 +1,40 @@
-from aiogram import Bot, Dispatcher, F
-from aiogram.filters import CommandStart
-from aiogram.types import (KeyboardButton, Message, ReplyKeyboardMarkup,
-                           ReplyKeyboardRemove)
+import asyncio
+import logging
 
-# Вместо BOT TOKEN HERE нужно вставить токен вашего бота,
-# полученный у @BotFather
-BOT_TOKEN = "7347541686:AAER4jOnrHGDZYCKwhplv62zb5IPU-25YFI"
+from aiogram import Bot, Dispatcher
+from config_data.config import Config, load_config
+from handlers import other_handlers, user_handlers
 
-# Создаем объекты бота и диспетчера
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
-
-# Создаем объекты кнопок
-button_1 = KeyboardButton(text='Собак 🦮')
-button_2 = KeyboardButton(text='Огурцов 🥒')
-
-# Создаем объект клавиатуры, добавляя в него кнопки
-keyboard = ReplyKeyboardMarkup(keyboard=[[button_1, button_2]])
+# Инициализируем логгер
+logger = logging.getLogger(__name__)
 
 
-# Этот хэндлер будет срабатывать на команду "/start"
-# и отправлять в чат клавиатуру
-@dp.message(CommandStart())
-async def process_start_command(message: Message):
-    await message.answer(
-        text='Чего кошки боятся больше?',
-        reply_markup=keyboard
-    )
+# Функция конфигурирования и запуска бота
+async def main():
+    # Конфигурируем логирование
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(filename)s:%(lineno)d #%(levelname)-8s '
+               '[%(asctime)s] - %(name)s - %(message)s')
 
+    # Выводим в консоль информацию о начале запуска бота
+    logger.info('Starting bot')
 
-# Этот хэндлер будет срабатывать на ответ "Собак 🦮" и удалять клавиатуру
-@dp.message(F.text == 'Собак 🦮')
-async def process_dog_answer(message: Message):
-    await message.answer(
-        text='Да, несомненно, кошки боятся собак. '
-             'Но вы видели как они боятся огурцов?',
-        reply_markup=ReplyKeyboardRemove()
-    )
+    # Загружаем конфиг в переменную config
+    config: Config = load_config()
 
+    # Инициализируем бот и диспетчер
+    bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
+    dp = Dispatcher()
 
-# Этот хэндлер будет срабатывать на ответ "Огурцов 🥒" и удалять клавиатуру
-@dp.message(F.text == 'Огурцов 🥒')
-async def process_cucumber_answer(message: Message):
-    await message.answer(
-        text='Да, иногда кажется, что огурцов '
-             'кошки боятся больше',
-        reply_markup=ReplyKeyboardRemove()
-    )
+    # Регистриуем роутеры в диспетчере
+    dp.include_router(user_handlers.router)
+    dp.include_router(other_handlers.router)
+
+    # Пропускаем накопившиеся апдейты и запускаем polling
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
 
 
 if __name__ == '__main__':
-    dp.run_polling(bot)
+    asyncio.run(main())
